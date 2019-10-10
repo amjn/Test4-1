@@ -2,8 +2,8 @@ resources:
  pipelines:
    - pipeline: P1
      source: Arsasana.Test2
-   - pipeline: P4
-     source: Arsasana.Test1
+  #  - pipeline: P4
+  #    source: Arsasana.Test1
 
 trigger:
 - master
