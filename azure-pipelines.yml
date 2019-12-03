@@ -1,0 +1,187 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+stages:
+- stage: publish
+  jobs:
+    - job: PPAV1DPAV2
+      steps:
+        - task: PublishPipelineArtifact@1
+          inputs:
+            artifactName: 'drop'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: 'drop'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+    - job: PPAV0DPAV1
+      steps:
+        - task: PublishPipelineArtifact@0
+          inputs:
+            artifactName: 'drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@1
+          inputs:
+            artifactName: 'drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@0
+          inputs:
+            artifactName: 'drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+    - job: Hosted_PPAV1DPAV2
+      pool:
+        name: Hosted
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@1
+          inputs:
+            artifactName: 'Hosted_drop'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+    - job: Hosted_PPAV0DPAV1
+      pool:
+        name: Hosted
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@1
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+
+    - job: Hosted_2017_PPAV1DPAV2
+      pool:
+        name: Hosted VS2017
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@1
+          inputs:
+            artifactName: 'Hosted_2017_drop'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+    - job: Hosted_2017_PPAV0DPAV1
+      pool:
+        name: Hosted VS2017
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_2017_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@1
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_2017_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+
+    - job: Hosted_macOS_PPAV1DPAV2
+      pool:
+        name: Hosted macOS
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@1
+          inputs:
+            artifactName: 'Hosted_mac_drop'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+    - job: Hosted_macOS_PPAV0DPAV1
+      pool:
+        name: Hosted macOS
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_mac_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@1
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_mac_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+
+    - job: Hosted_Ubuntu_1604_PPAV1DPAV2
+      pool:
+        name: Hosted Ubuntu 1604
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@1
+          inputs:
+            artifactName: 'Hosted_Ubuntu_1604_drop'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: PublishPipelineArtifact@1
+          inputs:
+            artifactName: 'serviceold'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+    - job: Hosted_Ubuntu_1604_PPAV0DPAV1
+      pool:
+        name: Hosted Ubuntu 1604
+        demands: npm
+      steps:
+        - task: PublishPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_Ubuntu_1604_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: PublishPipelineArtifact@0
+          inputs:
+            artifactName: 'service'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@1
+          inputs:
+            artifactName: ''
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - task: DownloadPipelineArtifact@0
+          inputs:
+            artifactName: 'Hosted_Ubuntu_1604_drop2'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+        - publish: '$(System.DefaultWorkingDirectory)'
+          artifact: testArtifact
+        - download: 'current' 
+          artifact: 'testArtifact'
+- stage: consume
+  jobs:
+    - deployment: consumer
+      environment: consumer
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - script: find .
+
+
+
+
+
+
+
+
